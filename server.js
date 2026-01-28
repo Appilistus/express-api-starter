@@ -10,7 +10,11 @@ mongoose.connect(MONGO_URL)
 mongoose.Promise = Promise
 
 const Author = mongoose.model("Author", {
-  name: String
+  name: String,
+  createdAt: {
+    type: Date,
+    default: () => new Date()
+  }
 })
 
 const Book = mongoose.model("Book", {
@@ -83,7 +87,12 @@ app.get("/books", async (req, res) => {
   res.json(books)
 })
 
-
+app.post("/authors", async (req, res) => {
+  const { name } = req.body
+  const author = new Author({ name })
+  await author.save()
+  res.json(author)
+})
 
 // Start the server
 app.listen(port, () => {
